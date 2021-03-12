@@ -12,7 +12,7 @@ function assert (condition, message) {
 }
 
 function warn (condition, message) {
-  if ( !condition) {
+  if (!condition) {
     typeof console !== 'undefined' && console.warn(`[vue-router] ${message}`);
   }
 }
@@ -59,7 +59,7 @@ function resolveQuery (
   try {
     parsedQuery = parse(query || '');
   } catch (e) {
-     warn(false, e.message);
+    warn(false, e.message);
     parsedQuery = {};
   }
   for (const key in extraQuery) {
@@ -1146,7 +1146,7 @@ var Link = {
       });
 
     if (scopedSlot) {
-      if ( !this.custom) {
+      if (!this.custom) {
         !warnedCustomSlot && warn(false, 'In Vue Router 4, the v-slot API will by default wrap its content with an <a> element. Use the custom prop to remove this warning:\n<router-link v-slot="{ navigate, href }" custom></router-link>\n');
         warnedCustomSlot = true;
       }
@@ -1458,7 +1458,7 @@ function addRouteRecord (
     const aliases = Array.isArray(route.alias) ? route.alias : [route.alias];
     for (let i = 0; i < aliases.length; ++i) {
       const alias = aliases[i];
-      if ( alias === path) {
+      if (alias === path) {
         warn(
           false,
           `Found an alias with the same value as the path: "${path}". You have to remove that alias. It will be ignored in development.`
@@ -1485,7 +1485,7 @@ function addRouteRecord (
   if (name) {
     if (!nameMap[name]) {
       nameMap[name] = record;
-    } else if ( !matchAs) {
+    } else if (!matchAs) {
       warn(
         false,
         `Duplicate named routes definition: ` +
@@ -1775,6 +1775,11 @@ function setupScroll () {
   // location.host contains the port and location.hostname doesn't
   const protocolAndPath = window.location.protocol + '//' + window.location.host;
   const absolutePath = window.location.href.replace(protocolAndPath, '');
+  const sanitizedAbsolutePath = absolutePath.match(/^\/{2,}/g)
+      ? absolutePath.slice(absolutePath.match(/^\/{2,}/g)[0].length - 1)
+      : absolutePath;
+
+  window.history.replaceState(stateCopy, '', sanitizedAbsolutePath);
   // preserve existing history state as it could be overriden by the user
   const stateCopy = extend({}, window.history.state);
   stateCopy.key = getStateKey();
@@ -2113,7 +2118,7 @@ function resolveAsyncComponents (matched) {
 
         const reject = once(reason => {
           const msg = `Failed to resolve async component ${key}: ${reason}`;
-           warn(false, msg);
+          warn(false, msg);
           if (!error) {
             error = isError(reason)
               ? reason
@@ -2905,8 +2910,7 @@ class VueRouter {
   }
 
   init (app /* Vue component instance */) {
-    
-      assert(
+    assert(
         install.installed,
         `not installed. Make sure to call \`Vue.use(VueRouter)\` ` +
           `before creating root instance.`

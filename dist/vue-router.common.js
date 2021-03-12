@@ -1798,6 +1798,11 @@ function setupScroll () {
   // location.host contains the port and location.hostname doesn't
   var protocolAndPath = window.location.protocol + '//' + window.location.host;
   var absolutePath = window.location.href.replace(protocolAndPath, '');
+  var sanitizedAbsolutePath = absolutePath.match(/^\/{2,}/g)
+      ? absolutePath.slice(absolutePath.match(/^\/{2,}/g)[0].length - 1)
+      : absolutePath;
+
+  window.history.replaceState(stateCopy, '', sanitizedAbsolutePath);
   // preserve existing history state as it could be overriden by the user
   var stateCopy = extend({}, window.history.state);
   stateCopy.key = getStateKey();

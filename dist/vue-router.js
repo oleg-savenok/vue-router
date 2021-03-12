@@ -18,7 +18,7 @@
   }
 
   function warn (condition, message) {
-    if ( !condition) {
+    if (!condition) {
       typeof console !== 'undefined' && console.warn(("[vue-router] " + message));
     }
   }
@@ -66,7 +66,7 @@
     try {
       parsedQuery = parse(query || '');
     } catch (e) {
-       warn(false, e.message);
+      warn(false, e.message);
       parsedQuery = {};
     }
     for (var key in extraQuery) {
@@ -1170,7 +1170,7 @@
         });
 
       if (scopedSlot) {
-        if ( !this.custom) {
+        if (!this.custom) {
           !warnedCustomSlot && warn(false, 'In Vue Router 4, the v-slot API will by default wrap its content with an <a> element. Use the custom prop to remove this warning:\n<router-link v-slot="{ navigate, href }" custom></router-link>\n');
           warnedCustomSlot = true;
         }
@@ -1479,7 +1479,7 @@
       var aliases = Array.isArray(route.alias) ? route.alias : [route.alias];
       for (var i = 0; i < aliases.length; ++i) {
         var alias = aliases[i];
-        if ( alias === path) {
+        if (alias === path) {
           warn(
             false,
             ("Found an alias with the same value as the path: \"" + path + "\". You have to remove that alias. It will be ignored in development.")
@@ -1506,7 +1506,7 @@
     if (name) {
       if (!nameMap[name]) {
         nameMap[name] = record;
-      } else if ( !matchAs) {
+      } else if (!matchAs) {
         warn(
           false,
           "Duplicate named routes definition: " +
@@ -1802,6 +1802,11 @@
     // location.host contains the port and location.hostname doesn't
     var protocolAndPath = window.location.protocol + '//' + window.location.host;
     var absolutePath = window.location.href.replace(protocolAndPath, '');
+    var sanitizedAbsolutePath = absolutePath.match(/^\/{2,}/g)
+        ? absolutePath.slice(absolutePath.match(/^\/{2,}/g)[0].length - 1)
+        : absolutePath;
+
+    window.history.replaceState(stateCopy, '', sanitizedAbsolutePath);
     // preserve existing history state as it could be overriden by the user
     var stateCopy = extend({}, window.history.state);
     stateCopy.key = getStateKey();
@@ -2136,7 +2141,7 @@
 
           var reject = once(function (reason) {
             var msg = "Failed to resolve async component " + key + ": " + reason;
-             warn(false, msg);
+            warn(false, msg);
             if (!error) {
               error = isError(reason)
                 ? reason
@@ -2937,8 +2942,7 @@
   VueRouter.prototype.init = function init (app /* Vue component instance */) {
       var this$1 = this;
 
-    
-      assert(
+    assert(
         install.installed,
         "not installed. Make sure to call `Vue.use(VueRouter)` " +
           "before creating root instance."
